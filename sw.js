@@ -35,7 +35,7 @@ self.addEventListener("push", (event) => {
 
     body:
       data.body ||
-      "Extreme heat conditions detected.",
+      "High heat index detected. Remember to stay hydrated and avoid unnecessary strenuous outdoor activity.",
 
     icon:
       "icon-192.png",
