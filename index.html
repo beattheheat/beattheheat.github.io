@@ -11,33 +11,6 @@
   
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
-
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-
-<script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-OneSignalDeferred.push(async function(OneSignal) {
-
-  await OneSignal.init({
-
-    appId: "b860ee2a-8d1f-40a2-bf2b-2049a29fca0b",
-
-    serviceWorkerPath: "OneSignalSDKWorker.js",
-    serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js",
-
-    serviceWorkerParam: {
-      scope: "/lottie/"
-    },
-
-    notifyButton: {
-      enable: true
-    }
-
-  });
-
-});
-</script>
   
   <style>
     * {
@@ -328,13 +301,31 @@ OneSignalDeferred.push(async function(OneSignal) {
       color: #6b7280;
     }
   </style>
-  <script type="text/javascript">
-    (function(d, t) {
-        var g = d.createElement(t),
-        s = d.getElementsByTagName(t)[0];
-        g.src = "https://cdn.pushalert.co/unified_16292d6b9c1c50d5d8244bfb95353558.js";
-        s.parentNode.insertBefore(g, s);
-    }(document, "script"));
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+OneSignalDeferred.push(async function(OneSignal) {
+
+  await OneSignal.init({
+
+    appId: "b860ee2a-8d1f-40a2-bf2b-2049a29fca0b",
+
+    serviceWorkerPath: "OneSignalSDKWorker.js",
+    serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js",
+
+    serviceWorkerParam: {
+      scope: "/lottie/"
+    },
+
+    notifyButton: {
+      enable: true
+    }
+
+  });
+
+});
 </script>
 </head>
 
