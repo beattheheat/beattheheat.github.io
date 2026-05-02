@@ -904,10 +904,6 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
   }
 
   function renderWeather(place, weather) {
-    lastHeatIndex = hi;
-lastTemperature = tempF;
-
-updateHeatAlert(hi);
 
     const tempF = weather.main.temp;
     const rh = weather.main.humidity;
@@ -943,6 +939,11 @@ updateHeatAlert(hi);
     weatherContainer.style.display = "block";
 
     updateRiskIndicator();
+
+        lastHeatIndex = hi;
+lastTemperature = tempF;
+
+updateHeatAlert(hi);
   }
 
   function showSpinner(show) {
