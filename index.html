@@ -222,6 +222,23 @@
       gap: 0.25rem 1rem;
     }
 
+      <div class="card" id="heat-alert-card">
+
+    <div class="heat-alert-title">
+      ⚠️ Heat Safety Advisory
+    </div>
+
+    <div class="heat-alert-body" id="heat-alert-body">
+      Dangerous heat conditions detected.
+    </div>
+
+  </div>
+    let lastHeatIndex = null;
+let lastTemperature = null;
+let currentAnimation = null;
+
+const HEAT_ALERT_THRESHOLD = 60;
+
     #risk-card {
       transition: background-color 0.6s ease, border-color 0.6s ease;
       border-left: 6px solid transparent;
@@ -301,7 +318,25 @@
       font-size: 0.8rem;
       color: #6b7280;
     }
+    #heat-alert-card {
+      display: none;
+      background: #fff4e5;
+      border-left: 6px solid #f97316;
+      transition: all 0.5s ease;
+    }
 
+    .heat-alert-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #c2410c;
+      margin-bottom: 0.75rem;
+    }
+
+    .heat-alert-body {
+      color: #7c2d12;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
     footer {
       text-align: center;
       padding: 0.75rem;
@@ -734,6 +769,45 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
     }, 100);
   }
 
+  function updateHeatAlert(heatIndex) {
+
+  const alertCard = document.getElementById("heat-alert-card");
+  const alertBody = document.getElementById("heat-alert-body");
+
+  if (heatIndex >= HEAT_ALERT_THRESHOLD) {
+
+    alertCard.style.display = "block";
+
+    let severityText = "";
+
+    if (heatIndex >= 125) {
+      severityText = "Extreme heat conditions are present. Avoid prolonged outdoor activity if possible.";
+    }
+    else if (heatIndex >= 103) {
+      severityText = "Very dangerous heat conditions are present. Take frequent cooling breaks and avoid overexertion.";
+    }
+    else {
+      severityText = "Elevated heat conditions are present. Use caution outdoors and monitor for signs of heat stress.";
+    }
+
+    alertBody.innerHTML = `
+      The current heat index is <strong>${Math.round(heatIndex)}°F</strong>.<br><br>
+      ${severityText}<br><br>
+      • Stay hydrated throughout the day<br>
+      • Limit prolonged sun exposure<br>
+      • Take breaks in shaded or air-conditioned areas<br>
+      • Wear lightweight and breathable clothing<br>
+      • Monitor children and elderly individuals closely
+    `;
+
+  }
+  else {
+
+    alertCard.style.display = "none";
+
+  }
+}
+
   function updateRiskCardColor(level) {
 
     const card = document.getElementById("risk-card");
@@ -830,6 +904,10 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
   }
 
   function renderWeather(place, weather) {
+    lastHeatIndex = hi;
+lastTemperature = tempF;
+
+updateHeatAlert(hi);
 
     const tempF = weather.main.temp;
     const rh = weather.main.humidity;
