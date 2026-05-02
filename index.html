@@ -452,6 +452,39 @@ OneSignalDeferred.push(async function(OneSignal) {
 
   </div>
 
+  <div
+  class="card"
+  id="heat-advisory-card"
+  style="
+    display:none;
+    background:#fff4e5;
+    border-left:6px solid #f59e0b;
+  "
+>
+
+  <div
+    style="
+      font-size:1.1rem;
+      font-weight:700;
+      color:#b45309;
+      margin-bottom:0.5rem;
+    "
+  >
+    Heat Advisory
+  </div>
+
+  <div
+    id="heat-advisory-text"
+    style="
+      color:#7c2d12;
+      line-height:1.5;
+      font-size:0.95rem;
+    "
+  >
+  </div>
+
+</div>
+
   <div class="card" id="risk-card">
 
     <div class="risk-title">Heat Stress Risk Indicator</div>
@@ -771,8 +804,7 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
 
   const alertCard = document.getElementById("heat-alert-card");
   const alertBody = document.getElementById("heat-alert-body");
-
-    const HEAT_ALERT_THRESHOLD = 60;
+  const HEAT_ALERT_THRESHOLD = 60;
 
   if (heatIndex >= HEAT_ALERT_THRESHOLD) {
 
