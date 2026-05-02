@@ -222,21 +222,6 @@
       gap: 0.25rem 1rem;
     }
 
-      <div class="card" id="heat-alert-card">
-
-    <div class="heat-alert-title">
-      ⚠️ Heat Safety Advisory
-    </div>
-
-    <div class="heat-alert-body" id="heat-alert-body">
-      Dangerous heat conditions detected.
-    </div>
-
-  </div>
-    let lastHeatIndex = null;
-let lastTemperature = null;
-let currentAnimation = null;
-
     #risk-card {
       transition: background-color 0.6s ease, border-color 0.6s ease;
       border-left: 6px solid transparent;
@@ -484,6 +469,19 @@ OneSignalDeferred.push(async function(OneSignal) {
   </div>
 
 </div>
+
+  
+      <div class="card" id="heat-alert-card">
+
+    <div class="heat-alert-title">
+      ⚠️ Heat Safety Advisory
+    </div>
+
+    <div class="heat-alert-body" id="heat-alert-body">
+      Dangerous heat conditions detected.
+    </div>
+
+  </div>
 
   <div class="card" id="risk-card">
 
@@ -941,6 +939,41 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
     const rh = weather.main.humidity;
 
     const hi = calculateHeatIndex(tempF, rh);
+
+    const alertCard =
+  document.getElementById("heat-alert-card");
+
+const alertBody =
+  document.getElementById("heat-alert-body");
+
+if (hi >= HEAT_ALERT_THRESHOLD) {
+
+  alertCard.style.display = "block";
+
+  let message =
+    "Use caution outdoors. Stay hydrated and take breaks in shaded or cool areas.";
+
+  if (hi >= 110) {
+
+    message =
+      "Extreme heat danger. Avoid prolonged outdoor exposure and drink water frequently.";
+
+  }
+  else if (hi >= 100) {
+
+    message =
+      "High heat conditions detected. Limit strenuous outdoor activity and stay hydrated.";
+
+  }
+
+  alertBody.textContent = message;
+
+}
+else {
+
+  alertCard.style.display = "none";
+
+}
 
     lastHeatIndex = hi;
 
