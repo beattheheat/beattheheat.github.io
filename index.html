@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Heat Risk Assessment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Lottie -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Google Sans", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f4f4f7;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 2rem;
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+      padding: 2rem;
+      width: 100%;
+      max-width: 650px;
+      position: relative;
+    }
+
+    .title-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      background: #cc0000;
+      color: #fff;
+      padding: 1.25rem 1rem;
+      border-radius: 12px;
+    }
+
+    .title-row img {
+      width: 250px;
+      height: 50px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .title-row h2 {
+      margin: 0;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+      margin: 1rem 0;
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 0.6rem 0.75rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      color: #000;
+    }
+
+    .search-bar button {
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      border: none;
+      background: #cc0000;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .search-bar button:hover {
+      background: #a30000;
+    }
+
+    .suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-top: none;
+      width: 100%;
+      z-index: 10;
+      border-radius: 0 0 6px 6px;
+      display: none;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .suggestion-item {
+      padding: 0.6rem;
+      cursor: pointer;
+      color: #000;
+    }
+
+    .suggestion-item:hover {
+      background: #f0f0f0;
+    }
+
+    .status {
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      color: #4b5563;
+    }
+
+    .error {
+      color: #b91c1c;
+    }
+
+    .spinner {
+      display: none;
+      margin: 1rem auto;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #ddd;
+      border-top-color: #cc0000;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .weather-location {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .weather-coords {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 0.75rem;
+    }
+
+    .weather-main {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .weather-temp {
+      font-size: 2.5rem;
+      font-weight: 600;
+    }
+
+    #weather-animation {
+      width: 90px;
+      height: 90px;
+      flex-shrink: 0;
+      opacity: 0;
+      transform: translateY(10px);
+      transition:
+        opacity 0.5s ease,
+        transform 0.5s ease;
+    }
+
+    #weather-animation.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .weather-desc {
+      font-size: 1rem;
+      text-transform: capitalize;
+      color: #374151;
+    }
+
+    .weather-extra {
+      font-size: 0.95rem;
+      color: #4b5563;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.25rem 1rem;
+    }
+
+    #risk-card {
+      transition: background-color 0.6s ease, border-color 0.6s ease;
+      border-left: 6px solid transparent;
+    }
+
+    .risk-bg-low { background-color: #e6f4ea; border-left-color: #15803d; }
+    .risk-bg-moderate { background-color: #fff7d6; border-left-color: #ca8a04; }
+    .risk-bg-high { background-color: #fde2e1; border-left-color: #b91c1c; }
+    .risk-bg-very-high { background-color: #fbd5d5; border-left-color: #7f1d1d; }
+    .risk-bg-extreme { background-color: #f8cfc0; border-left-color: #7c2d12; }
+
+    .risk-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #111827;
+    }
+
+    .risk-section {
+      margin-top: 0.75rem;
+      font-size: 0.95rem;
+      color: #374151;
+    }
+
+    .age-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      width: 100%;
+    }
+
+    #age-slider {
+      width: 100%;
+      accent-color: #cc0000;
+      height: 6px;
+      border-radius: 4px;
+    }
+
+    .age-value {
+      font-weight: 600;
+      color: #111827;
+      min-width: 2.5rem;
+      text-align: right;
+    }
+
+    .risk-factors {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.35rem 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .risk-factors label {
+      font-size: 0.9rem;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .risk-result {
+      margin-top: 0.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      min-height: 1.2rem;
+    }
+
+    .risk-low { color: #15803d; }
+    .risk-moderate { color: #ca8a04; }
+    .risk-high { color: #b91c1c; }
+    .risk-very-high { color: #7f1d1d; }
+    .risk-extreme { color: #7c2d12; }
+
+    .risk-disclaimer {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    footer {
+      text-align: center;
+      padding: 0.75rem;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+  </style>
+</head>
+
+<body>
+
+<main>
+
+  <!-- WEATHER CARD -->
+  <div class="card">
+
+    <div class="title-row">
+      <img src="bthlogo.png" alt="Project Beat the Heat Logo">
+      <h2>Heat Risk Assessment</h2>
+    </div>
+
+    <div class="search-wrapper">
+      <form id="search-form" class="search-bar">
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Search a location..."
+          autocomplete="off"
+          required
+        />
+        <button type="submit">Search</button>
+      </form>
+
+      <div id="suggestions" class="suggestions"></div>
+    </div>
+
+    <div id="status" class="status">
+      Type any address or point of interest.
+    </div>
+
+    <div class="spinner" id="spinner"></div>
+
+    <div id="weather" style="display:none;">
+
+      <div class="weather-location" id="weather-location"></div>
+
+      <div class="weather-coords" id="weather-coords"></div>
+
+      <div class="weather-main">
+
+        <div class="weather-temp" id="weather-temp"></div>
+
+        <!-- Lottie Animation -->
+        <div id="weather-animation"></div>
+
+        <div class="weather-desc" id="weather-desc"></div>
+
+      </div>
+
+      <div class="weather-extra">
+        <div><strong>Heat index:</strong> <span id="weather-heatindex"></span></div>
+        <div><strong>Humidity:</strong> <span id="weather-humidity"></span></div>
+        <div><strong>Wind:</strong> <span id="weather-wind"></span></div>
+        <div><strong>Pressure:</strong> <span id="weather-pressure"></span></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- RISK CARD -->
+  <div class="card" id="risk-card">
+
+    <div class="risk-title">Heat Stress Risk Indicator</div>
+
+    <div class="risk-section">
+
+      <div class="age-row">
+        <span>Age:</span>
+
+        <input
+          type="range"
+          id="age-slider"
+          min="0"
+          max="100"
+          value="25"
+        />
+
+        <span class="age-value" id="age-value">25</span>
+
+        <span>years</span>
+      </div>
+
+      <div class="risk-factors">
+
+        <label>
+          <input type="checkbox" class="risk-factor" />
+          High outdoor exertion
+        </label>
+
+        <label>
+          <input type="checkbox" class="risk-factor" />
+          Prolonged sun exposure
+        </label>
+
+        <label>
+          <input type="checkbox" class="risk-factor" />
+          Limited shade access
+        </label>
+
+        <label>
+          <input type="checkbox" class="risk-factor" />
+          Poor hydration
+        </label>
+
+        <label>
+          <input type="checkbox" class="risk-factor" />
+          Recent illness
+        </label>
+
+        <label>
+          <input type="checkbox" class="risk-factor" />
+          Outdoor work environment
+        </label>
+
+      </div>
+
+      <div class="risk-result" id="risk-result">
+        Search a location to calculate risk.
+      </div>
+
+      <div class="risk-disclaimer">
+        This indicator is informational only and does not constitute medical advice.
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Data via Geoapify & OpenWeatherMap
+</footer>
+
+<script>
+
+const GEOAPIFY_KEY = "c91a39ca56b24b6ba5ce5d9ec2bd5b2b";
+const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
+
+  const form = document.getElementById("search-form");
+  const input = document.getElementById("search-input");
+  const suggestionsBox = document.getElementById("suggestions");
+  const spinner = document.getElementById("spinner");
+
+  const statusEl = document.getElementById("status");
+  const weatherContainer = document.getElementById("weather");
+
+  const locEl = document.getElementById("weather-location");
+  const coordsEl = document.getElementById("weather-coords");
+  const tempEl = document.getElementById("weather-temp");
+  const descEl = document.getElementById("weather-desc");
+
+  const heatIndexEl = document.getElementById("weather-heatindex");
+  const humEl = document.getElementById("weather-humidity");
+  const windEl = document.getElementById("weather-wind");
+  const pressEl = document.getElementById("weather-pressure");
+
+  const ageSlider = document.getElementById("age-slider");
+  const ageValue = document.getElementById("age-value");
+
+  const riskResultEl = document.getElementById("risk-result");
+  const riskFactorInputs = document.querySelectorAll(".risk-factor");
+
+  let lastHeatIndex = null;
+  let currentAnimation = null;
+
+  const pearlandBounds = [
+    -95.60, 29.30,
+    -95.10, 29.90
+  ];
+
+  function cleanLabel(str) {
+    return str
+      .replace(", Texas, United States of America", "")
+      .replace(", United States of America", "")
+      .replace(", Texas", "")
+      .trim();
+  }
+
+  async function fetchSuggestions(query) {
+
+    const url =
+      `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&filter=rect:${pearlandBounds.join(",")}&apiKey=${GEOAPIFY_KEY}`;
+
+    const res = await fetch(url);
+
+    if (!res.ok) return [];
+
+    const data = await res.json();
+
+    return data.features || [];
+  }
+
+  function showSuggestions(list) {
+
+    suggestionsBox.innerHTML = "";
+
+    if (list.length === 0) {
+      suggestionsBox.style.display = "none";
+      return;
+    }
+
+    list.forEach(item => {
+
+      const label = cleanLabel(item.properties.formatted);
+
+      const div = document.createElement("div");
+
+      div.className = "suggestion-item";
+      div.textContent = label;
+
+      div.addEventListener("click", () => {
+
+        input.value = label;
+        suggestionsBox.style.display = "none";
+
+        form.dispatchEvent(new Event("submit"));
+
+      });
+
+      suggestionsBox.appendChild(div);
+
+    });
+
+    suggestionsBox.style.display = "block";
+  }
+
+  let suggestionTimeout;
+
+  input.addEventListener("input", () => {
+
+    const query = input.value.trim();
+
+    if (!query) {
+      suggestionsBox.style.display = "none";
+      return;
+    }
+
+    clearTimeout(suggestionTimeout);
+
+    suggestionTimeout = setTimeout(async () => {
+
+      const results = await fetchSuggestions(query);
+
+      showSuggestions(results);
+
+    }, 100);
+  });
+
+  document.addEventListener("click", (e) => {
+
+    if (!form.contains(e.target)) {
+      suggestionsBox.style.display = "none";
+    }
+
+  });
+
+  async function geocode(query) {
+
+    const url =
+      `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(query)}&filter=rect:${pearlandBounds.join(",")}&apiKey=${GEOAPIFY_KEY}`;
+
+    const res = await fetch(url);
+
+    const data = await res.json();
+
+    if (!data.features || data.features.length === 0) {
+      throw new Error("No matching location found.");
+    }
+
+    const f = data.features[0];
+
+    return {
+      name: cleanLabel(f.properties.formatted),
+      lat: f.properties.lat,
+      lon: f.properties.lon
+    };
+  }
+
+  async function fetchWeather(lat, lon) {
+
+    const url =
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=imperial`;
+
+    const res = await fetch(url);
+
+    return res.json();
+  }
+
+  function showStatus(message, isError = false) {
+
+    statusEl.textContent = message;
+
+    statusEl.classList.toggle("error", isError);
+  }
+
+  function calculateHeatIndex(tempF, rh) {
+
+    if (tempF < 80 || rh < 40) return tempF;
+
+    const T = tempF;
+    const R = rh;
+
+    let HI =
+      -42.379 +
+      2.04901523 * T +
+      10.14333127 * R -
+      0.22475541 * T * R -
+      0.00683783 * T * T -
+      0.05481717 * R * R +
+      0.00122874 * T * T * R +
+      0.00085282 * T * R * R -
+      0.00000199 * T * T * R * R;
+
+    return HI;
+  }
+
+  function loadWeatherAnimation(weatherMain) {
+
+    const container = document.getElementById("weather-animation");
+
+    if (currentAnimation) {
+      currentAnimation.destroy();
+    }
+
+    container.innerHTML = "";
+    container.classList.remove("show");
+
+    let animationPath = "";
+
+    switch (weatherMain.toLowerCase()) {
+
+      case "clear":
+        animationPath =
+          "https://assets2.lottiefiles.com/packages/lf20_t24tpvcu.json";
+        break;
+
+      case "clouds":
+        animationPath =
+          "https://assets9.lottiefiles.com/packages/lf20_zkrtnd8o.json";
+        break;
+
+      case "rain":
+      case "drizzle":
+        animationPath =
+          "https://assets9.lottiefiles.com/packages/lf20_rpC1Rd.json";
+        break;
+
+      case "thunderstorm":
+        animationPath =
+          "https://assets2.lottiefiles.com/packages/lf20_xlKy4m.json";
+        break;
+
+      case "snow":
+        animationPath =
+          "https://assets2.lottiefiles.com/packages/lf20_WtPCZs.json";
+        break;
+
+      case "mist":
+      case "fog":
+      case "haze":
+        animationPath =
+          "https://assets2.lottiefiles.com/packages/lf20_khzniaya.json";
+        break;
+
+      default:
+        animationPath =
+          "https://assets9.lottiefiles.com/packages/lf20_zkrtnd8o.json";
+    }
+
+    currentAnimation = lottie.loadAnimation({
+      container: container,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      path: animationPath
+    });
+
+    setTimeout(() => {
+      container.classList.add("show");
+    }, 100);
+  }
+
+  function updateRiskCardColor(level) {
+
+    const card = document.getElementById("risk-card");
+
+    card.classList.remove(
+      "risk-bg-low",
+      "risk-bg-moderate",
+      "risk-bg-high",
+      "risk-bg-very-high",
+      "risk-bg-extreme"
+    );
+
+    if (level === 1) card.classList.add("risk-bg-low");
+    if (level === 2) card.classList.add("risk-bg-moderate");
+    if (level === 3) card.classList.add("risk-bg-high");
+    if (level === 4) card.classList.add("risk-bg-very-high");
+    if (level === 5) card.classList.add("risk-bg-extreme");
+  }
+
+  function updateRiskIndicator() {
+
+    if (lastHeatIndex === null) {
+      riskResultEl.textContent =
+        "Search a location to calculate risk.";
+      return;
+    }
+
+    let baseLevel;
+
+    const hi = lastHeatIndex;
+
+    if (hi < 80) baseLevel = 1;
+    else if (hi < 90) baseLevel = 2;
+    else if (hi < 103) baseLevel = 3;
+    else if (hi < 125) baseLevel = 4;
+    else baseLevel = 5;
+
+    const age = parseInt(ageSlider.value);
+
+    let ageAdj = 0;
+
+    if (age <= 11 || age >= 65) {
+      ageAdj = 1;
+    }
+
+    let factorCount = 0;
+
+    riskFactorInputs.forEach(cb => {
+      if (cb.checked) factorCount++;
+    });
+
+    let factorAdj = 0;
+
+    if (factorCount >= 1 && factorCount <= 2) {
+      factorAdj = 1;
+    }
+    else if (factorCount >= 3) {
+      factorAdj = 2;
+    }
+
+    let level = baseLevel + ageAdj + factorAdj;
+
+    if (level < 1) level = 1;
+    if (level > 5) level = 5;
+
+    let label = "";
+    let cls = "";
+
+    if (level === 1) {
+      label = "Low";
+      cls = "risk-low";
+    }
+    else if (level === 2) {
+      label = "Moderate";
+      cls = "risk-moderate";
+    }
+    else if (level === 3) {
+      label = "High";
+      cls = "risk-high";
+    }
+    else if (level === 4) {
+      label = "Very High";
+      cls = "risk-very-high";
+    }
+    else {
+      label = "Extreme";
+      cls = "risk-extreme";
+    }
+
+    riskResultEl.innerHTML =
+      `Overall heat stress risk: <span class="${cls}">${label}</span>`;
+
+    updateRiskCardColor(level);
+  }
+
+  function renderWeather(place, weather) {
+
+    const tempF = weather.main.temp;
+    const rh = weather.main.humidity;
+
+    const hi = calculateHeatIndex(tempF, rh);
+
+    lastHeatIndex = hi;
+
+    locEl.textContent = place.name.split(",")[0];
+
+    coordsEl.textContent =
+      `Lat: ${place.lat.toFixed(4)}, Lon: ${place.lon.toFixed(4)}`;
+
+    tempEl.textContent = Math.round(tempF) + "°F";
+
+    descEl.textContent =
+      weather.weather[0].description;
+
+    loadWeatherAnimation(weather.weather[0].main);
+
+    heatIndexEl.textContent =
+      Math.round(hi) + "°F";
+
+    humEl.textContent =
+      rh + "%";
+
+    pressEl.textContent =
+      weather.main.pressure + " hPa";
+
+    windEl.textContent =
+      weather.wind.speed + " mph";
+
+    weatherContainer.style.display = "block";
+
+    updateRiskIndicator();
+  }
+
+  function showSpinner(show) {
+
+    spinner.style.display = show ? "block" : "none";
+  }
+
+  form.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const query = input.value.trim();
+
+    if (!query) return;
+
+    showStatus("Searching...");
+    showSpinner(true);
+
+    weatherContainer.style.display = "none";
+
+    try {
+
+      const place = await geocode(query);
+
+      showStatus("Fetching weather...");
+
+      const weather =
+        await fetchWeather(place.lat, place.lon);
+
+      renderWeather(place, weather);
+
+      showStatus("Weather loaded.");
+
+    }
+    catch (err) {
+
+      showStatus(err.message, true);
+
+    }
+    finally {
+
+      showSpinner(false);
+
+    }
+  });
+
+  ageSlider.addEventListener("input", () => {
+
+    ageValue.textContent = ageSlider.value;
+
+    updateRiskIndicator();
+  });
+
+  riskFactorInputs.forEach(cb => {
+
+    cb.addEventListener("change", () => {
+
+      updateRiskIndicator();
+
+    });
+  });
+
+  ageValue.textContent = ageSlider.value;
+
+</script>
+
+</body>
+</html>
