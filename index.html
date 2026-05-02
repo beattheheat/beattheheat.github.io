@@ -18,6 +18,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Project Beat the Heat">
 
+  const HEAT_ALERT_THRESHOLD = 60;
+
 <link rel="apple-touch-icon" href="icon-192.png">
   
   <style>
@@ -236,8 +238,6 @@
     let lastHeatIndex = null;
 let lastTemperature = null;
 let currentAnimation = null;
-
-const HEAT_ALERT_THRESHOLD = 60;
 
     #risk-card {
       transition: background-color 0.6s ease, border-color 0.6s ease;
