@@ -322,8 +322,16 @@ OneSignalDeferred.push(async function(OneSignal) {
     notifyButton: {
       enable: true
     }
-
   });
+
+  const permission =
+    await OneSignal.Notifications.permission;
+
+  if (permission !== "granted") {
+
+    await OneSignal.Notifications.requestPermission();
+
+  }
 
 });
 </script>
