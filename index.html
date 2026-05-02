@@ -561,6 +561,8 @@ OneSignalDeferred.push(async function(OneSignal) {
 const GEOAPIFY_KEY = "c91a39ca56b24b6ba5ce5d9ec2bd5b2b";
 const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
 
+    const HEAT_ALERT_THRESHOLD = 60;
+
   const form = document.getElementById("search-form");
   const input = document.getElementById("search-input");
   const suggestionsBox = document.getElementById("suggestions");
@@ -802,7 +804,6 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
 
   const alertCard = document.getElementById("heat-alert-card");
   const alertBody = document.getElementById("heat-alert-body");
-  const HEAT_ALERT_THRESHOLD = 60;
 
   if (heatIndex >= HEAT_ALERT_THRESHOLD) {
 
