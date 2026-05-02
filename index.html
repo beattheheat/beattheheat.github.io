@@ -318,6 +318,8 @@ OneSignalDeferred.push(async function(OneSignal) {
 
   await OneSignal.init({
 
+    
+
     appId: "b860ee2a-8d1f-40a2-bf2b-2049a29fca0b",
 
     serviceWorkerPath: "OneSignalSDKWorker.js",
@@ -332,16 +334,30 @@ OneSignalDeferred.push(async function(OneSignal) {
     }
   });
 
-  const permission =
+   const permission =
     await OneSignal.Notifications.permission;
 
   if (permission !== "granted") {
 
-    await OneSignal.Notifications.requestPermission();
+    setTimeout(async () => {
+
+      try {
+
+        await OneSignal.Notifications.requestPermission();
+
+      }
+      catch(err) {
+
+        console.log(err);
+
+      }
+
+    }, 1500);
 
   }
 
 });
+
 </script>
 </head>
 
