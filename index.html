@@ -852,6 +852,24 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
 
     e.preventDefault();
 
+    try {
+
+  const permission =
+    await OneSignal.Notifications.permission;
+
+  if (permission !== "granted") {
+
+    await OneSignal.Notifications.requestPermission();
+
+  }
+
+}
+catch(err) {
+
+  console.log(err);
+
+}
+
     const query = input.value.trim();
 
     if (!query) return;
