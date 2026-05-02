@@ -13,13 +13,30 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
 
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
 <script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "b860ee2a-8d1f-40a2-bf2b-2049a29fca0b",
-    });
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+OneSignalDeferred.push(async function(OneSignal) {
+
+  await OneSignal.init({
+
+    appId: "b860ee2a-8d1f-40a2-bf2b-2049a29fca0b",
+
+    serviceWorkerPath: "OneSignalSDKWorker.js",
+    serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js",
+
+    serviceWorkerParam: {
+      scope: "/lottie/"
+    },
+
+    notifyButton: {
+      enable: true
+    }
+
   });
+
+});
 </script>
   
   <style>
