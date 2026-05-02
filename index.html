@@ -5,10 +5,7 @@
   <title>Heat Risk Assessment</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Google Sans -->
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <!-- Lottie -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
 
   <style>
@@ -305,8 +302,6 @@
 <body>
 
 <main>
-
-  <!-- WEATHER CARD -->
   <div class="card">
 
     <div class="title-row">
@@ -344,8 +339,7 @@
       <div class="weather-main">
 
         <div class="weather-temp" id="weather-temp"></div>
-
-        <!-- Lottie Animation -->
+        
         <div id="weather-animation"></div>
 
         <div class="weather-desc" id="weather-desc"></div>
@@ -363,7 +357,6 @@
 
   </div>
 
-  <!-- RISK CARD -->
   <div class="card" id="risk-card">
 
     <div class="risk-title">Heat Stress Risk Indicator</div>
@@ -635,43 +628,36 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
 
     switch (weatherMain.toLowerCase()) {
 
-      case "clear":
-        animationPath =
-          "https://assets2.lottiefiles.com/packages/lf20_t24tpvcu.json";
-        break;
+  case "clear":
+    animationPath = "animations/sun.json";
+    break;
 
-      case "clouds":
-        animationPath =
-          "https://assets9.lottiefiles.com/packages/lf20_zkrtnd8o.json";
-        break;
+  case "clouds":
+    animationPath = "animations/cloud.json";
+    break;
 
-      case "rain":
-      case "drizzle":
-        animationPath =
-          "https://assets9.lottiefiles.com/packages/lf20_rpC1Rd.json";
-        break;
+  case "rain":
+  case "drizzle":
+    animationPath = "animations/rain.json";
+    break;
 
-      case "thunderstorm":
-        animationPath =
-          "https://assets2.lottiefiles.com/packages/lf20_xlKy4m.json";
-        break;
+  case "thunderstorm":
+    animationPath = "animations/storm.json";
+    break;
 
-      case "snow":
-        animationPath =
-          "https://assets2.lottiefiles.com/packages/lf20_WtPCZs.json";
-        break;
+  case "mist":
+  case "fog":
+  case "haze":
+    animationPath = "animations/cloud.json";
+    break;
 
-      case "mist":
-      case "fog":
-      case "haze":
-        animationPath =
-          "https://assets2.lottiefiles.com/packages/lf20_khzniaya.json";
-        break;
+  case "snow":
+    animationPath = "animations/snow.json";
+    break;
 
-      default:
-        animationPath =
-          "https://assets9.lottiefiles.com/packages/lf20_zkrtnd8o.json";
-    }
+  default:
+    animationPath = "animations/cloud.json";
+}
 
     currentAnimation = lottie.loadAnimation({
       container: container,
