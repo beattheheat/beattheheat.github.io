@@ -320,12 +320,25 @@
       line-height: 1.6;
       font-size: 0.95rem;
     }
+    #heat-advisory-card {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+#heat-advisory-card.show {
+  opacity: 1;
+  transform: translateY(0);
+}
     footer {
       text-align: center;
       padding: 0.75rem;
       font-size: 0.8rem;
       color: #6b7280;
     }
+    
   </style>
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
@@ -951,6 +964,10 @@ if (hi >= HEAT_ALERT_THRESHOLD) {
 
   alertCard.style.display = "block";
 
+   setTimeout(() => {
+    advisoryCard.classList.add("show");
+  }, 50);
+
   let message =
     "Use caution outdoors. Stay hydrated and take breaks in shaded or cool areas.";
 
@@ -973,6 +990,9 @@ if (hi >= HEAT_ALERT_THRESHOLD) {
 else {
 
   alertCard.style.display = "none";
+  setTimeout(() => {
+    advisoryCard.style.display = "none";
+  }, 500);
 
 }
 
