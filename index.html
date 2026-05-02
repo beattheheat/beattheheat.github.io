@@ -631,34 +631,34 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
     switch (weatherMain.toLowerCase()) {
 
   case "clear":
-    animationPath = "animations/sun.json";
+    animationPath = "lottie/sun.json";
     break;
 
   case "clouds":
-    animationPath = "animations/cloud.json";
+    animationPath = "lottie/cloud.json";
     break;
 
   case "rain":
   case "drizzle":
-    animationPath = "animations/rain.json";
+    animationPath = "lottie/rain.json";
     break;
 
   case "thunderstorm":
-    animationPath = "animations/storm.json";
+    animationPath = "lottie/storm.json";
     break;
 
   case "mist":
   case "fog":
   case "haze":
-    animationPath = "animations/cloud.json";
+    animationPath = "lottie/cloud.json";
     break;
 
   case "snow":
-    animationPath = "animations/snow.json";
+    animationPath = "lottie/snow.json";
     break;
 
   default:
-    animationPath = "animations/cloud.json";
+    animationPath = "lottie/cloud.json";
 }
 
     currentAnimation = lottie.loadAnimation({
