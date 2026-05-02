@@ -18,8 +18,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Project Beat the Heat">
 
-  const HEAT_ALERT_THRESHOLD = 60;
-
 <link rel="apple-touch-icon" href="icon-192.png">
   
   <style>
@@ -773,6 +771,8 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
 
   const alertCard = document.getElementById("heat-alert-card");
   const alertBody = document.getElementById("heat-alert-body");
+
+    const HEAT_ALERT_THRESHOLD = 60;
 
   if (heatIndex >= HEAT_ALERT_THRESHOLD) {
 
