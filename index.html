@@ -222,11 +222,30 @@
     }
 
     .weather-extra {
-      font-size: 0.95rem;
-      color: #4b5563;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 0.25rem 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .stat-card {
+      background: #f4f4f7;
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .stat-value {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #111827;
     }
 
     #risk-card {
@@ -327,18 +346,6 @@
       line-height: 1.6;
       font-size: 0.95rem;
     }
-    #heat-advisory-card {
-  opacity: 0;
-  transform: translateY(10px);
-  transition:
-    opacity 0.5s ease,
-    transform 0.5s ease;
-}
-
-#heat-advisory-card.show {
-  opacity: 1;
-  transform: translateY(0);
-}
     footer {
       text-align: center;
       padding: 0.75rem;
@@ -449,49 +456,27 @@ OneSignalDeferred.push(async function(OneSignal) {
     </div>
 
     <div class="weather-extra">
-      <div><strong>Heat index:</strong> <span id="weather-heatindex"></span></div>
-      <div><strong>Humidity:</strong> <span id="weather-humidity"></span></div>
-      <div><strong>Wind:</strong> <span id="weather-wind"></span></div>
-      <div><strong>Pressure:</strong> <span id="weather-pressure"></span></div>
+      <div class="stat-card">
+        <div class="stat-label">Heat index</div>
+        <div class="stat-value" id="weather-heatindex"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Humidity</div>
+        <div class="stat-value" id="weather-humidity"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Wind</div>
+        <div class="stat-value" id="weather-wind"></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pressure</div>
+        <div class="stat-value" id="weather-pressure"></div>
+      </div>
     </div>
 
   </div>
 
-  <div
-  class="card"
-  id="heat-advisory-card"
-  style="
-    display:none;
-    background:#fff4e5;
-    border-left:6px solid #f59e0b;
-  "
->
-
-  <div
-    style="
-      font-size:1.1rem;
-      font-weight:700;
-      color:#b45309;
-      margin-bottom:0.5rem;
-    "
-  >
-    Heat Advisory
-  </div>
-
-  <div
-    id="heat-advisory-text"
-    style="
-      color:#7c2d12;
-      line-height:1.5;
-      font-size:0.95rem;
-    "
-  >
-  </div>
-
-</div>
-
-  
-      <div class="card" id="heat-alert-card">
+  <div class="card" id="heat-alert-card">
 
     <div class="heat-alert-title">
       ⚠️ Heat Safety Advisory
@@ -590,7 +575,6 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
 
   const statusEl = document.getElementById("status");
   const weatherContainer = document.getElementById("weather");
-  const advisoryCard = document.getElementById("heat-advisory-card");
 
   const locEl = document.getElementById("weather-location");
   const coordsEl = document.getElementById("weather-coords");
@@ -972,11 +956,6 @@ if (hi >= HEAT_ALERT_THRESHOLD) {
 
   alertCard.style.display = "block";
 
-  advisoryCard.style.display = "block";
-   setTimeout(() => {
-    advisoryCard.classList.add("show");
-  }, 50);
-
   let message =
     "Use caution outdoors. Stay hydrated and take breaks in shaded or cool areas.";
 
@@ -999,10 +978,6 @@ if (hi >= HEAT_ALERT_THRESHOLD) {
 else {
 
   alertCard.style.display = "none";
-  advisoryCard.classList.remove("show");
-  setTimeout(() => {
-    advisoryCard.style.display = "none";
-  }, 500);
 
 }
 
