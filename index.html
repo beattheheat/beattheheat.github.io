@@ -81,7 +81,7 @@
       margin: 0;
       font-size: 1.6rem;
       font-weight: 700;
-      color: #cc0000;
+      color: #DD2929;
     }
 
     .search-wrapper {
@@ -246,6 +246,10 @@
       font-size: 1.15rem;
       font-weight: 600;
       color: #111827;
+    }
+
+    .stat-value.heat-index-alert {
+      color: #f97316;
     }
 
     #risk-card {
@@ -955,6 +959,7 @@ const alertBody =
 if (hi >= HEAT_ALERT_THRESHOLD) {
 
   alertCard.style.display = "block";
+  heatIndexEl.classList.add("heat-index-alert");
 
   let message =
     "Use caution outdoors. Stay hydrated and take breaks in shaded or cool areas.";
@@ -978,6 +983,7 @@ if (hi >= HEAT_ALERT_THRESHOLD) {
 else {
 
   alertCard.style.display = "none";
+  heatIndexEl.classList.remove("heat-index-alert");
 
 }
 
