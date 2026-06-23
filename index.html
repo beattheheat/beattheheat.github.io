@@ -73,24 +73,22 @@
       justify-content: center;
       align-items: center;
       text-align: center;
+      margin-top: -0.5rem;
       margin-bottom: 1.5rem;
-      background: #cc0000;
-      color: #fff;
-      padding: 0.75rem 1rem;
-      border-radius: 12px;
     }
 
     .title-row h2 {
       margin: 0;
       font-size: 1.6rem;
       font-weight: 700;
-      color: #fff;
+      color: #cc0000;
     }
 
     .search-wrapper {
       position: relative;
       width: 100%;
-      margin: 1rem 0;
+      max-width: 650px;
+      margin: 0;
     }
 
     .search-bar {
@@ -101,22 +99,25 @@
 
     .search-bar input {
       flex: 1;
-      padding: 0.6rem 0.75rem;
-      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      border-radius: 999px;
       border: 1px solid #ccc;
       font-size: 1rem;
       color: #000;
+      background: #fff;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
     }
 
     .search-bar button {
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
+      padding: 0.75rem 1.4rem;
+      border-radius: 999px;
       border: none;
       background: #cc0000;
       color: #fff;
       font-size: 1rem;
       cursor: pointer;
       font-weight: 600;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
     }
 
     .search-bar button:hover {
@@ -132,10 +133,11 @@
       border-top: none;
       width: 100%;
       z-index: 10;
-      border-radius: 0 0 6px 6px;
+      border-radius: 0 0 14px 14px;
       display: none;
       max-height: 200px;
       overflow-y: auto;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
     }
 
     .suggestion-item {
@@ -405,56 +407,52 @@ OneSignalDeferred.push(async function(OneSignal) {
     <img src="bthlogored.png" alt="Project Beat the Heat Logo">
   </div>
 
-  <div class="card">
+  <div class="title-row">
+    <h2>Heat Risk Assessment</h2>
+  </div>
 
-    <div class="title-row">
-      <h2>Heat Risk Assessment</h2>
+  <div class="search-wrapper">
+    <form id="search-form" class="search-bar">
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search a location..."
+        autocomplete="off"
+        required
+      />
+      <button type="submit">Search</button>
+    </form>
+
+    <div id="suggestions" class="suggestions"></div>
+  </div>
+
+  <div id="status" class="status">
+    Type any address or point of interest.
+  </div>
+
+  <div class="spinner" id="spinner"></div>
+
+  <div class="card" id="weather" style="display:none;">
+
+    <div class="weather-location" id="weather-location"></div>
+
+    <div class="weather-coords" id="weather-coords"></div>
+
+    <div class="weather-main">
+
+      <div class="weather-temp" id="weather-temp"></div>
+      
+      <div id="weather-animation"></div>
+
+      <div class="weather-desc" id="weather-desc"></div>
+
     </div>
 
-    <div class="search-wrapper">
-      <form id="search-form" class="search-bar">
-        <input
-          id="search-input"
-          type="text"
-          placeholder="Search a location..."
-          autocomplete="off"
-          required
-        />
-        <button type="submit">Search</button>
-      </form>
-
-      <div id="suggestions" class="suggestions"></div>
-    </div>
-
-    <div id="status" class="status">
-      Type any address or point of interest.
-    </div>
-
-    <div class="spinner" id="spinner"></div>
-
-    <div id="weather" style="display:none;">
-
-      <div class="weather-location" id="weather-location"></div>
-
-      <div class="weather-coords" id="weather-coords"></div>
-
-      <div class="weather-main">
-
-        <div class="weather-temp" id="weather-temp"></div>
-        
-        <div id="weather-animation"></div>
-
-        <div class="weather-desc" id="weather-desc"></div>
-
-      </div>
-
-      <div class="weather-extra">
-        <div><strong>Heat index:</strong> <span id="weather-heatindex"></span></div>
-        <div><strong>Humidity:</strong> <span id="weather-humidity"></span></div>
-        <div><strong>Wind:</strong> <span id="weather-wind"></span></div>
-        <div><strong>Pressure:</strong> <span id="weather-pressure"></span></div>
-      </div>
-
+    <div class="weather-extra">
+      <div><strong>Heat index:</strong> <span id="weather-heatindex"></span></div>
+      <div><strong>Humidity:</strong> <span id="weather-humidity"></span></div>
+      <div><strong>Wind:</strong> <span id="weather-wind"></span></div>
+      <div><strong>Pressure:</strong> <span id="weather-pressure"></span></div>
     </div>
 
   </div>
@@ -592,6 +590,7 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
 
   const statusEl = document.getElementById("status");
   const weatherContainer = document.getElementById("weather");
+  const advisoryCard = document.getElementById("heat-advisory-card");
 
   const locEl = document.getElementById("weather-location");
   const coordsEl = document.getElementById("weather-coords");
@@ -973,6 +972,7 @@ if (hi >= HEAT_ALERT_THRESHOLD) {
 
   alertCard.style.display = "block";
 
+  advisoryCard.style.display = "block";
    setTimeout(() => {
     advisoryCard.classList.add("show");
   }, 50);
@@ -999,6 +999,7 @@ if (hi >= HEAT_ALERT_THRESHOLD) {
 else {
 
   alertCard.style.display = "none";
+  advisoryCard.classList.remove("show");
   setTimeout(() => {
     advisoryCard.style.display = "none";
   }, 500);
