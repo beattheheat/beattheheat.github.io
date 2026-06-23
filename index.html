@@ -28,11 +28,39 @@
 
     body {
       margin: 0;
-      background: #f4f4f7;
+      background: #1a1a1a;
       color: #222;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      position: relative;
+    }
+
+    .bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 2.5s ease-in-out;
+      z-index: -2;
+    }
+
+    .bg-layer.active {
+      opacity: 1;
+    }
+
+    .bg-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(20, 20, 20, 0.45);
+      z-index: -1;
     }
 
     main {
@@ -46,9 +74,12 @@
     }
 
     .card {
-      background: #fff;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
       padding: 2rem;
       width: 100%;
       max-width: 650px;
@@ -228,7 +259,7 @@
     }
 
     .stat-card {
-      background: #f4f4f7;
+      background: rgba(244, 244, 247, 0.55);
       border-radius: 10px;
       padding: 0.75rem 0.9rem;
       text-align: center;
@@ -257,11 +288,11 @@
       border-left: 6px solid transparent;
     }
 
-    .risk-bg-low { background-color: #e6f4ea; border-left-color: #15803d; }
-    .risk-bg-moderate { background-color: #fff7d6; border-left-color: #ca8a04; }
-    .risk-bg-high { background-color: #fde2e1; border-left-color: #b91c1c; }
-    .risk-bg-very-high { background-color: #fbd5d5; border-left-color: #7f1d1d; }
-    .risk-bg-extreme { background-color: #f8cfc0; border-left-color: #7c2d12; }
+    .risk-bg-low { background-color: rgba(230, 244, 234, 0.6); border-left-color: #15803d; }
+    .risk-bg-moderate { background-color: rgba(255, 247, 214, 0.6); border-left-color: #ca8a04; }
+    .risk-bg-high { background-color: rgba(253, 226, 225, 0.6); border-left-color: #b91c1c; }
+    .risk-bg-very-high { background-color: rgba(251, 213, 213, 0.6); border-left-color: #7f1d1d; }
+    .risk-bg-extreme { background-color: rgba(248, 207, 192, 0.6); border-left-color: #7c2d12; }
 
     .risk-title {
       font-size: 1.1rem;
@@ -411,6 +442,9 @@ OneSignalDeferred.push(async function(OneSignal) {
 </head>
 
 <body>
+
+<div id="bg-layers"></div>
+<div class="bg-overlay"></div>
 
 <main>
 
@@ -598,6 +632,60 @@ const OPENWEATHER_API_KEY = "9436177ed254128092db93469e597b51";
 
   let lastHeatIndex = null;
   let currentAnimation = null;
+
+  // Background photo slideshow.
+  // Drop images into a "photos" folder in the repo root, named
+  // image1.jpg, image2.jpg, image3.jpg, etc. Add as many as you like —
+  // just keep the numbering sequential starting at 1.
+  const BACKGROUND_PHOTO_COUNT = 6;
+
+  const bgPhotos = Array.from(
+    { length: BACKGROUND_PHOTO_COUNT },
+    (_, i) => `photos/image${i + 1}.jpg`
+  );
+
+  function initBackgroundSlideshow(photos) {
+
+    const container = document.getElementById("bg-layers");
+
+    if (!container || photos.length === 0) return;
+
+    const loadChecks = photos.map(src => new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve(src);
+      img.onerror = () => resolve(null);
+      img.src = src;
+    }));
+
+    Promise.all(loadChecks).then(results => {
+
+      const validPhotos = results.filter(Boolean);
+
+      if (validPhotos.length === 0) return;
+
+      const layers = validPhotos.map((src, i) => {
+        const layer = document.createElement("div");
+        layer.className = "bg-layer";
+        layer.style.backgroundImage = `url("${src}")`;
+        if (i === 0) layer.classList.add("active");
+        container.appendChild(layer);
+        return layer;
+      });
+
+      if (layers.length < 2) return;
+
+      let current = 0;
+
+      setInterval(() => {
+        const next = (current + 1) % layers.length;
+        layers[next].classList.add("active");
+        layers[current].classList.remove("active");
+        current = next;
+      }, 12000);
+    });
+  }
+
+  initBackgroundSlideshow(bgPhotos);
 
   const pearlandBounds = [
     -95.60, 29.30,
